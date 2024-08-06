@@ -104,3 +104,92 @@ class TestProductModel(unittest.TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
+    def test_read_a_product(self):
+        """It should Read a product and assert that it succeeded"""
+        product = ProductFactory()
+        #logger = logging.getLogger("flask.app")
+        #logger.info("create prod id %d", product.id)        
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        new_product = Product.find(product.id)
+        self.assertEqual(new_product.name, product.name)
+        self.assertEqual(new_product.id, product.id)
+        self.assertEqual(new_product.description, product.description)
+        self.assertEqual(new_product.price, product.price)
+
+    def test_update_a_product(self):
+        """It should update a product and assert that it succeeded"""
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        product.description = "new desc"
+        orig_id = product.id
+        product.update()
+        new_product = Product.find(product.id)
+        self.assertEqual(new_product.description, "new desc")
+        self.assertEqual(new_product.id, orig_id)
+
+    def test_delete_a_product(self):
+        """It should delete a product and assert that it succeeded"""
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        #print("created prod id %d", product.id)        
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        product.delete()
+        products = Product.all()
+        self.assertEqual(len(products), 0)
+
+    def test_list_all_products(self):
+        """It should list all products and assert that it succeeded"""
+        products = Product.all()
+        self.assertEqual(len(products), 0)
+        for _ in range(5):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        self.assertEqual(len(products), 5)
+
+    def test_find_product_by_name(self):
+        """It should list all products and assert that it succeeded"""
+        products = Product.all()
+        self.assertEqual(len(products), 0)
+        for _ in range(5):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        self.assertEqual(len(products), 5)
+        first_name = products[0].name
+        test_product = find_by_name(first_name)
+        self.assertEqual(test_product.name, first_name)
+
+    def test_find_product_by_availability(self):
+        """It should list all products by availability and assert that it succeeded"""
+        products = Product.all()
+        self.assertEqual(len(products), 0)
+        for _ in range(5):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        self.assertEqual(len(products), 5)
+        avail = product[0].available
+        found = Product.find_by_availability(avail)
+        for product in found:
+            self.assertEqual(product.available, avail)
+
+    def test_find_product_by_category(self):
+        """It should list all products and assert that it succeeded"""
+        products = Product.all()
+        self.assertEqual(len(products), 0)
+        for _ in range(5):
+            product = ProductFactory()
+            product.create()
+        products = Product.all()
+        self.assertEqual(len(products), 5)
+        first_cat = products[0].category
+        test_product = find_by_category(first_cat)
+        self.assertEqual(test_product.category, first_cat)
