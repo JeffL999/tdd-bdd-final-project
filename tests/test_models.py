@@ -164,8 +164,9 @@ class TestProductModel(unittest.TestCase):
         products = Product.all()
         self.assertEqual(len(products), 5)
         first_name = products[0].name
-        test_product = find_by_name(first_name)
-        self.assertEqual(test_product.name, first_name)
+        found = Product.find_by_name(first_name)
+        for product in found:
+            self.assertEqual(product.name, first_name)
 
     def test_find_product_by_availability(self):
         """It should list all products by availability and assert that it succeeded"""
@@ -176,7 +177,7 @@ class TestProductModel(unittest.TestCase):
             product.create()
         products = Product.all()
         self.assertEqual(len(products), 5)
-        avail = product[0].available
+        avail = products[0].available
         found = Product.find_by_availability(avail)
         for product in found:
             self.assertEqual(product.available, avail)
@@ -191,5 +192,6 @@ class TestProductModel(unittest.TestCase):
         products = Product.all()
         self.assertEqual(len(products), 5)
         first_cat = products[0].category
-        test_product = find_by_category(first_cat)
-        self.assertEqual(test_product.category, first_cat)
+        found = Product.find_by_category(first_cat)
+        for product in found:
+            self.assertEqual(product.category, first_cat)
